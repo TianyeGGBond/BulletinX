@@ -10,8 +10,15 @@ import java.util.List;
 
 @RestController
 public class UserResource {
+
+    private final UserDaoService service;
+
+    //你虽然写了 @Autowired private UserDaoService service;，但是 IDE 发现你没有手动给 service 赋值，它就担心你这个字段会是 null。
+    //你可以 使用构造函数注入 来消除这个警告，让代码更明确：
     @Autowired
-    private UserDaoService service;
+    public UserResource(UserDaoService service){
+        this.service = service;
+    }
 
     @GetMapping("/users")
     public List<User> retrieveAllUsers(){
@@ -20,7 +27,13 @@ public class UserResource {
 
     @GetMapping("/users/{id}")
     public User retrieveUser(@PathVariable int id){
-        return service.findOne(id);
+        //new service.findOne(id);
+        //这是非法的 Java 语法。不能在方法调用前加 new，应该是直接调用方法。
+        User user = service.findOne(id);
+        if(user == null){
+            throw new UserNotFoundException("id" + id);
+        }
+        return user;
     }
 
     @PostMapping("/users")
