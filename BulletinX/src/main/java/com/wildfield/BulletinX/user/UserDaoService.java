@@ -37,4 +37,8 @@ public class UserDaoService {
                 .findFirst()
                 .orElse(null);
     }
+
+    public void delete(int id) {
+        users.removeIf(user -> user.getId().equals(id));
+    }
 }

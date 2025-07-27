@@ -1,5 +1,6 @@
 package com.wildfield.BulletinX.user;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +37,14 @@ public class UserResource {
         return user;
     }
 
+    @DeleteMapping("/users/{id}")
+    public void deleteUser(@PathVariable int id){
+        service.delete(id);
+    }
+
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    //valid 校验
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user){
         User savedUser = service.save(user);
 
         // 构建 URI，比如 /users/4

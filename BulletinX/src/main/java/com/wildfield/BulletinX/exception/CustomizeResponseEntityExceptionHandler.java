@@ -1,8 +1,11 @@
 package com.wildfield.BulletinX.exception;
 
 import com.wildfield.BulletinX.user.UserNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -31,5 +34,24 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
                 LocalTime.now(), ex.getMessage(), request.getDescription(false)
         );
         return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_FOUND); //404
+    }
+
+    //新增user格式不对时返回自定义消息
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        // 创建自定义错误信息对象
+        ErrorDetail errorDetails = new ErrorDetail(
+                LocalTime.now(), // 当前时间
+                "Total error(s): " + ex.getErrorCount() + ". First error: " + ex.getFieldError().getDefaultMessage(), // 拿到校验失败的提示信息（message=）
+                request.getDescription(false) // 获取请求的路径等信息
+        );
+
+        // 返回错误信息 + 400 状态码
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 }
