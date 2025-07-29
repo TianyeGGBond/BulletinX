@@ -1,5 +1,8 @@
 package com.wildfield.BulletinX.user;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -9,7 +12,14 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@Entity(name = "user_detail")
 public class User {
+
+    protected User(){
+    }
+
+    @Id
+    @GeneratedValue
     private Integer id;
     @Size(min = 2, message = "Name should have at least 2 characters")
     private String name;
@@ -20,7 +30,7 @@ public class User {
 //    Jackson 用无参构造器创建空对象
 //    用 setName() 和 setBirth() 设置值
 //    后端自动用 setId(++usersCount) 生成 ID
-    public User() {} //无参构造器
+//    public User() {} //无参构造器
 
     public User(Integer id, String name, LocalDate birth) {
         this.id = id;
